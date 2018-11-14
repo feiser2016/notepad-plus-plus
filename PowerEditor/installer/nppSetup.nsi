@@ -37,6 +37,10 @@ Unicode true			; Generate a Unicode installer. It can only be used outside of se
 SetCompressor /SOLID lzma	; This reduces installer size by approx 30~35%
 ;SetCompressor /FINAL lzma	; This reduces installer size by approx 15~18%
 
+
+; Installer is DPI-aware: not scaled by the DWM, no blurry text
+ManifestDPIAware true
+
 !include "nsisInclude\winVer.nsh"
 !include "nsisInclude\globalDef.nsh"
 !include "nsisInclude\tools.nsh"
@@ -269,6 +273,6 @@ Section -FinishSection
   Call writeInstallInfoInRegistry
 SectionEnd
 
-BrandingText "Je code donc je suis"
+BrandingText "The best things in life are free. Notepad++ is free. So Notepad++ is the best"
 
 ; eof
