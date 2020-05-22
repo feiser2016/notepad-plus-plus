@@ -1,5 +1,5 @@
 // This file is part of Notepad++ project
-// Copyright (C)2003 Don HO <don.h@free.fr>
+// Copyright (C)2020 Don HO <don.h@free.fr>
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -38,8 +38,6 @@
 #include "Common.h"
 #include "../Utf8.h"
 #include <Parameters.h>
-
-WcharMbcsConvertor* WcharMbcsConvertor::_pSelf = new WcharMbcsConvertor;
 
 void printInt(int int2print)
 {
@@ -326,11 +324,14 @@ bool isInList(const TCHAR *token, const TCHAR *list)
 	if ((!token) || (!list))
 		return false;
 
-	TCHAR word[64];
+	const size_t wordLen = 64;
+	size_t listLen = lstrlen(list);
+
+	TCHAR word[wordLen];
 	size_t i = 0;
 	size_t j = 0;
 
-	for (size_t len = lstrlen(list); i <= len; ++i)
+	for (; i <= listLen; ++i)
 	{
 		if ((list[i] == ' ')||(list[i] == '\0'))
 		{
@@ -347,6 +348,9 @@ bool isInList(const TCHAR *token, const TCHAR *list)
 		{
 			word[j] = list[i];
 			++j;
+
+			if (j >= wordLen)
+				return false;
 		}
 	}
 	return false;
@@ -355,9 +359,13 @@ bool isInList(const TCHAR *token, const TCHAR *list)
 
 generic_string purgeMenuItemString(const TCHAR * menuItemStr, bool keepAmpersand)
 {
-	TCHAR cleanedName[64] = TEXT("");
+	const size_t cleanedNameLen = 64;
+	TCHAR cleanedName[cleanedNameLen] = TEXT("");
 	size_t j = 0;
 	size_t menuNameLen = lstrlen(menuItemStr);
+	if (menuNameLen >= cleanedNameLen)
+		menuNameLen = cleanedNameLen - 1;
+
 	for (size_t k = 0 ; k < menuNameLen ; ++k)
 	{
 		if (menuItemStr[k] == '\t')
@@ -808,6 +816,39 @@ std::vector<generic_string> stringSplit(const generic_string& input, const gener
 }
 
 
+bool str2numberVector(generic_string str2convert, std::vector<size_t>& numVect)
+{
+	numVect.clear();
+
+	for (auto i : str2convert)
+	{
+		switch (i)
+		{
+		case ' ':
+		case '0': case '1':	case '2': case '3':	case '4':
+		case '5': case '6':	case '7': case '8':	case '9':
+		{
+			// correct. do nothing
+		}
+		break;
+
+		default:
+			return false;
+		}
+	}
+
+	std::vector<generic_string> v = stringSplit(str2convert, TEXT(" "));
+	for (auto i : v)
+	{
+		// Don't treat empty string and the number greater than 9999
+		if (!i.empty() && i.length() < 5)
+		{
+			numVect.push_back(std::stoi(i));
+		}
+	}
+	return true;
+}
+
 generic_string stringJoin(const std::vector<generic_string>& strings, const generic_string& separator)
 {
 	generic_string joined;
@@ -965,12 +1006,35 @@ bool str2Clipboard(const generic_string &str2cpy, HWND hwnd)
 
 bool matchInList(const TCHAR *fileName, const std::vector<generic_string> & patterns)
 {
+	bool is_matched = false;
 	for (size_t i = 0, len = patterns.size(); i < len; ++i)
 	{
+		if (patterns[i].length() > 1 && patterns[i][0] == '!')
+		{
+			if (PathMatchSpec(fileName, patterns[i].c_str() + 1))
+				return false;
+
+			continue;
+		} 
+
 		if (PathMatchSpec(fileName, patterns[i].c_str()))
-			return true;
+			is_matched = true;
 	}
-	return false;
+	return is_matched;
+}
+
+bool allPatternsAreExclusion(const std::vector<generic_string> patterns)
+{
+	bool oneInclusionPatternFound = false;
+	for (size_t i = 0, len = patterns.size(); i < len; ++i)
+	{
+		if (patterns[i][0] != '!')
+		{
+			oneInclusionPatternFound = true;
+			break;
+		}
+	}
+	return not oneInclusionPatternFound;
 }
 
 generic_string GetLastErrorAsString(DWORD errorCode)
@@ -1010,7 +1074,7 @@ HWND CreateToolTip(int toolID, HWND hDlg, HINSTANCE hInst, const PTSTR pszText)
 	}
 
 	// Create the tooltip. g_hInst is the global instance handle.
-	HWND hwndTip = CreateWindowEx(NULL, TOOLTIPS_CLASS, NULL,
+	HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
 		WS_POPUP | TTS_ALWAYSTIP | TTS_BALLOON,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -1034,6 +1098,11 @@ HWND CreateToolTip(int toolID, HWND hDlg, HINSTANCE hInst, const PTSTR pszText)
 		DestroyWindow(hwndTip);
 		return NULL;
 	}
+
+	SendMessage(hwndTip, TTM_ACTIVATE, TRUE, 0);
+	SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, 200);
+	// Make tip stay 15 seconds
+	SendMessage(hwndTip, TTM_SETDELAYTIME, TTDT_AUTOPOP, MAKELPARAM((15000), (0)));
 
 	return hwndTip;
 }
@@ -1145,7 +1214,7 @@ bool isCertificateValidated(const generic_string & fullFilePath, const generic_s
 
 		isOK = true;
 	}
-	catch (generic_string s)
+	catch (const generic_string& s)
 	{
 		// display error message
 		MessageBox(NULL, s.c_str(), TEXT("Certificate checking"), MB_OK);
@@ -1213,7 +1282,7 @@ bool deleteFileOrFolder(const generic_string& f2delete)
 {
 	auto len = f2delete.length();
 	TCHAR* actionFolder = new TCHAR[len + 2];
-	lstrcpy(actionFolder, f2delete.c_str());
+	wcscpy_s(actionFolder, len + 2, f2delete.c_str());
 	actionFolder[len] = 0;
 	actionFolder[len + 1] = 0;
 
@@ -1232,3 +1301,29 @@ bool deleteFileOrFolder(const generic_string& f2delete)
 	delete[] actionFolder;
 	return (res == 0);
 }
+
+// Get a vector of full file paths in a given folder. File extension type filter should be *.*, *.xml, *.dll... according the type of file you want to get.  
+void getFilesInFolder(std::vector<generic_string>& files, const generic_string& extTypeFilter, const generic_string& inFolder)
+{
+	generic_string filter = inFolder;
+	PathAppend(filter, extTypeFilter);
+
+	WIN32_FIND_DATA foundData;
+	HANDLE hFindFile = ::FindFirstFile(filter.c_str(), &foundData);
+
+	if (hFindFile != INVALID_HANDLE_VALUE && !(foundData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+	{
+		generic_string foundFullPath = inFolder;
+		PathAppend(foundFullPath, foundData.cFileName);
+		files.push_back(foundFullPath);
+
+		while (::FindNextFile(hFindFile, &foundData))
+		{
+			generic_string foundFullPath2 = inFolder;
+			PathAppend(foundFullPath2, foundData.cFileName);
+			files.push_back(foundFullPath2);
+		}
+	}
+	::FindClose(hFindFile);
+}
+

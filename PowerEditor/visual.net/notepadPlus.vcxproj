@@ -23,28 +23,29 @@
     <ProjectGuid>{FCF60E65-1B78-4D1D-AB59-4FC00AC8C248}</ProjectGuid>
     <RootNamespace>Notepad++</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -106,10 +107,11 @@
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <DisableSpecificWarnings>4091;4456;4457;4459</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:strictStrings %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(OutDir)notepad++.exe</OutputFile>
       <Version>1.0</Version>
@@ -143,10 +145,11 @@
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <DisableSpecificWarnings>4091;4456;4457;4459</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:strictStrings %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(OutDir)notepad++.exe</OutputFile>
       <Version>1.0</Version>
@@ -186,9 +189,10 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4091;4456;4457;4459</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:strictStrings %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(OutDir)notepad++.exe</OutputFile>
       <Version>1.0</Version>
@@ -237,9 +241,10 @@ copy ..\src\contextMenu.xml ..\bin\contextMenu.xml
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4091;4456;4457;4459</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:strictStrings %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;shlwapi.lib;shell32.lib;Oleacc.lib;Dbghelp.lib;Version.lib;Crypt32.lib;wintrust.lib;Sensapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(OutDir)notepad++.exe</OutputFile>
       <Version>1.0</Version>
@@ -267,25 +272,9 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\MISC\Common\LongRunningOperation.cpp" />
-    <ClCompile Include="..\src\MISC\Common\mutex.cpp" />
     <ClCompile Include="..\src\MISC\Common\verifySignedfile.cpp" />
     <ClCompile Include="..\src\MISC\md5\md5Dlgs.cpp" />
     <ClCompile Include="..\src\MISC\sha2\sha-256.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangArabicModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangBulgarianModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangDanishModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangEsperantoModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangFrenchModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangGermanModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangGreekModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangHebrewModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangHungarianModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangRussianModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangSpanishModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangThaiModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangTurkishModel.cpp" />
-    <ClCompile Include="..\src\uchardet\LangModels\LangVietnameseModel.cpp" />
     <ClCompile Include="..\src\WinControls\AboutDlg\AboutDlg.cpp" />
     <ClCompile Include="..\src\WinControls\AnsiCharPanel\ansiCharPanel.cpp" />
     <ClCompile Include="..\src\ScitillaComponent\AutoCompletion.cpp" />
@@ -320,6 +309,12 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     <ClCompile Include="..\src\MISC\PluginsManager\IDAllocator.cpp" />
     <ClCompile Include="..\src\WinControls\ImageListSet\ImageListSet.cpp" />
     <ClCompile Include="..\src\uchardet\JpCntx.cpp" />
+    <ClCompile Include="..\src\uchardet\LangBulgarianModel.cpp" />
+    <ClCompile Include="..\src\uchardet\LangCyrillicModel.cpp" />
+    <ClCompile Include="..\src\uchardet\LangGreekModel.cpp" />
+    <ClCompile Include="..\src\uchardet\LangHebrewModel.cpp" />
+    <ClCompile Include="..\src\uchardet\LangHungarianModel.cpp" />
+    <ClCompile Include="..\src\uchardet\LangThaiModel.cpp" />
     <ClCompile Include="..\src\lastRecentFileList.cpp" />
     <ClCompile Include="..\src\lesDlgs.cpp" />
     <ClCompile Include="..\src\WinControls\AnsiCharPanel\ListView.cpp" />
@@ -399,6 +394,7 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     <ClCompile Include="..\src\WinControls\FileBrowser\fileBrowser.cpp" />
     <ClCompile Include="..\src\WinControls\ReadDirectoryChanges\ReadDirectoryChanges.cpp" />
     <ClCompile Include="..\src\WinControls\ReadDirectoryChanges\ReadDirectoryChangesPrivate.cpp" />
+    <ClCompile Include="..\src\WinControls\ReadDirectoryChanges\ReadFileChanges.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\src\icons\allChars_off.ico" />
@@ -541,9 +537,6 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     <None Include="..\src\cursors\drag_plus.cur" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\MISC\Common\LongRunningOperation.h" />
-    <ClInclude Include="..\src\MISC\Common\mutex.h" />
-    <ClInclude Include="..\src\MISC\Common\mutex.hxx" />
     <ClInclude Include="..\src\MISC\Common\verifySignedfile.h" />
     <ClInclude Include="..\src\MISC\md5\md5.h" />
     <ClInclude Include="..\src\MISC\md5\md5Dlgs.h" />
@@ -681,6 +674,8 @@ copy ..\src\contextMenu.xml ..\bin64\contextMenu.xml
     <ClInclude Include="..\src\WinControls\ReadDirectoryChanges\ReadDirectoryChanges.h" />
     <ClInclude Include="..\src\WinControls\ReadDirectoryChanges\ReadDirectoryChangesPrivate.h" />
     <ClInclude Include="..\src\WinControls\ReadDirectoryChanges\ThreadSafeQueue.h" />
+    <ClInclude Include="..\src\WinControls\ReadDirectoryChanges\ReadFileChanges.h" />
+	
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="..\src\notepad++.exe.manifest" />

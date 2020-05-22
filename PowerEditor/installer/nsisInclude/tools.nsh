@@ -98,10 +98,22 @@ Function ExtraOptions
 	${NSD_Check} $ShortcutCheckboxHandle
 	${NSD_OnClick} $ShortcutCheckboxHandle OnChange_ShortcutCheckBox
 	
-	${NSD_CreateCheckbox} 0 50 100% 30u "Don't use %APPDATA%$\nEnable this option to make Notepad++ load/write the configuration files from/to its install directory. Check it if you use Notepad++ in a USB device."
+	${NSD_CreateCheckbox} 0 80 100% 30u "Don't use %APPDATA%$\nEnable this option to make Notepad++ load/write the configuration files from/to its install directory. Check it if you use Notepad++ in a USB device."
 	Pop $NoUserDataCheckboxHandle
 	${NSD_OnClick} $NoUserDataCheckboxHandle OnChange_NoUserDataCheckBox
 	
+	StrLen $0 $PROGRAMFILES
+	StrCpy $1 $InstDir $0
+
+	StrLen $0 $PROGRAMFILES64
+	StrCpy $2 $InstDir $0
+	${If} $1 == "$PROGRAMFILES"
+	${ORIF} $2 == "$PROGRAMFILES64"
+		${NSD_Uncheck} $NoUserDataCheckboxHandle
+		EnableWindow $NoUserDataCheckboxHandle 0
+	${Else}
+		EnableWindow $NoUserDataCheckboxHandle 1
+	${EndIf}
 	nsDialogs::Show
 FunctionEnd
 

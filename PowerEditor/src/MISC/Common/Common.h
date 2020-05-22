@@ -1,5 +1,5 @@
 // This file is part of Notepad++ project
-// Copyright (C)2003 Don HO <don.h@free.fr>
+// Copyright (C)2020 Don HO <don.h@free.fr>
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -63,6 +63,7 @@ const bool dirDown = false;
 #define generic_fopen _wfopen
 #define generic_fgets fgetws
 #define COPYDATA_FILENAMES COPYDATA_FILENAMESW
+#define NPP_INTERNAL_FUCTION_STR TEXT("Notepad++::InternalFunction")
 
 typedef std::basic_string<TCHAR> generic_string;
 typedef std::basic_stringstream<TCHAR> generic_stringstream;
@@ -91,12 +92,15 @@ std::string getFileContent(const TCHAR *file2read);
 generic_string relativeFilePathToFullFilePath(const TCHAR *relativeFilePath);
 void writeFileContent(const TCHAR *file2write, const char *content2write);
 bool matchInList(const TCHAR *fileName, const std::vector<generic_string> & patterns);
+bool allPatternsAreExclusion(const std::vector<generic_string> patterns);
 
 class WcharMbcsConvertor final
 {
 public:
-	static WcharMbcsConvertor * getInstance() {return _pSelf;}
-	static void destroyInstance() {delete _pSelf;}
+	static WcharMbcsConvertor& getInstance() {
+		static WcharMbcsConvertor instance;
+		return instance;
+	}
 
 	const wchar_t * char2wchar(const char *mbStr, UINT codepage, int lenIn=-1, int *pLenOut=NULL, int *pBytesNotProcessed=NULL);
 	const wchar_t * char2wchar(const char *mbcs2Convert, UINT codepage, int *mstart, int *mend);
@@ -111,21 +115,23 @@ public:
     }
 
 protected:
-	WcharMbcsConvertor() {}
-	~WcharMbcsConvertor() {}
+	WcharMbcsConvertor() = default;
+	~WcharMbcsConvertor() = default;
 
 	// Since there's no public ctor, we need to void the default assignment operator and copy ctor.
 	// Since these are marked as deleted does not matter under which access specifier are kept
 	WcharMbcsConvertor(const WcharMbcsConvertor&) = delete;
 	WcharMbcsConvertor& operator= (const WcharMbcsConvertor&) = delete;
 
-	static WcharMbcsConvertor* _pSelf;
+	// No move ctor and assignment
+	WcharMbcsConvertor(WcharMbcsConvertor&&) = delete;
+	WcharMbcsConvertor& operator= (WcharMbcsConvertor&&) = delete;
 
 	template <class T>
 	class StringBuffer final
 	{
 	public:
-		~StringBuffer() { if(_allocLen) delete[] _str; }
+		~StringBuffer() { if (_allocLen) delete[] _str; }
 
 		void sizeTo(size_t size)
 		{
@@ -174,6 +180,7 @@ generic_string stringToUpper(generic_string strToConvert);
 generic_string stringToLower(generic_string strToConvert);
 generic_string stringReplace(generic_string subject, const generic_string& search, const generic_string& replace);
 std::vector<generic_string> stringSplit(const generic_string& input, const generic_string& delimiter);
+bool str2numberVector(generic_string str2convert, std::vector<size_t>& numVect);
 generic_string stringJoin(const std::vector<generic_string>& strings, const generic_string& separator);
 generic_string stringTakeWhileAdmissable(const generic_string& input, const generic_string& admissable);
 double stodLocale(const generic_string& str, _locale_t loc, size_t* idx = NULL);
@@ -196,3 +203,5 @@ std::wstring s2ws(const std::string& str);
 std::string ws2s(const std::wstring& wstr);
 
 bool deleteFileOrFolder(const generic_string& f2delete);
+
+void getFilesInFolder(std::vector<generic_string>& files, const generic_string& extTypeFilter, const generic_string& inFolder);
